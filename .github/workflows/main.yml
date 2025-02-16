@@ -29,10 +29,10 @@ jobs:
 
       - name: Build EXE with PyInstaller
         run: |
-          pyinstaller.exe --onefile main.py
+          pyinstaller.exe --onefile --noconsole --add-data "asset;asset" main.py
           
       - name: Archive the output
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2  # Use version v2, as v3 may be deprecated
         with:
           name: build
           path: dist/main.exe
