@@ -35,7 +35,7 @@ jobs:
         pyinstaller --onefile main.py
 
     - name: Upload Executable as Artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4  # Update to v4
       with:
         name: my-build
         path: dist/
