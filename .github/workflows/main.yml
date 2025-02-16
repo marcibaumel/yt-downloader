@@ -1,38 +1,43 @@
-name: Normal build
+name: Python package
 
 on:
   push:
     branches:
-      - main
+      - main  # or 'master', depending on your branch name
   pull_request:
     branches:
-      - main
+      - main  # or 'master', depending on your branch name
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, 3.10]  # List versions you want to support
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.12.3'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pyinstaller  # Install PyInstaller for building
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
 
-      - name: Build EXE with PyInstaller
-        run: |
-          pyinstaller.exe --onefile --noconsole --add-data "asset;asset" main.py
-          
-      - name: Archive the output
-        uses: actions/upload-artifact@v2  # Use version v2, as v3 may be deprecated
-        with:
-          name: build
-          path: dist/main.exe
+    - name: Build with PyInstaller
+      run: |
+        pyinstaller --onefile main.py
+        # If you want to upload the build, add the following:
+        # zip -r dist.zip dist/
+        # gh release create v1.0 dist.zip --title "Release v1.0"
+      
+    - name: Upload Executable as Artifact (Optional)
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-build
+        path: dist/
