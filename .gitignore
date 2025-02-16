@@ -1,9 +1,12 @@
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
+*$py.class
+
+# Media files
 *.mp4
 *.webm
-*$py.class
+*.m4a
 
 # C extensions
 *.so
