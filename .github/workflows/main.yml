@@ -33,8 +33,8 @@ jobs:
       run: |
         pyinstaller --onefile main.py
       
-    - name: Upload Executable as Artifact (Updated)
-      uses: actions/upload-artifact@latest
+    - name: Upload Executable as Artifact
+      uses: actions/upload-artifact@v3
       with:
         name: my-build
         path: dist/
