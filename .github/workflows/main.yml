@@ -32,12 +32,9 @@ jobs:
     - name: Build with PyInstaller
       run: |
         pyinstaller --onefile main.py
-        # If you want to upload the build, add the following:
-        # zip -r dist.zip dist/
-        # gh release create v1.0 dist.zip --title "Release v1.0"
       
-    - name: Upload Executable as Artifact (Optional)
-      uses: actions/upload-artifact@v2
+    - name: Upload Executable as Artifact (Updated)
+      uses: actions/upload-artifact@latest
       with:
         name: my-build
         path: dist/
