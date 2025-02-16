@@ -1,19 +1,14 @@
-from enum import Enum
 import os
 import tkinter
 import customtkinter
-import re
-# import ffmpeg
+from ffmpeg import FFmpeg, Progress 
 from pytubefix import YouTube
 from logger_definition import logger
 from format_options import FormatOptions
 from utils import is_valid_youtube_url
 
-# TODO: Make input with 3 dots for audio, video or audio and video option
 # TODO: Make it to a standalone runnable
 # TODO: Make translation for system
-
-# Example: https://www.youtube.com/watch?v=c9eGtyqz4gY
 
 def _on_progress(stream, chunk, bytes_remaining):
     total_size = stream.filesize
@@ -41,17 +36,53 @@ def _startDownload():
         ytObject = YouTube(youtube_link,  on_progress_callback=_on_progress)
         
         format_option = option_menu.get().strip()
-                
-        video = _defineYoutubeStream(format_option, ytObject, ytObject.title)
         
-        title_label.configure(text=ytObject.title, text_color="white")
-        finished_label.configure(text="")
+        if format_option == "Video" or format_option == "Audio":
+            video = _defineYoutubeStream(format_option, ytObject, ytObject.title)
+            title_label.configure(text=ytObject.title, text_color="white")
+            finished_label.configure(text="")
         
-        logger.info("Download has started with %s format", format_option)
-        
-        video.download()
-        logger.info("Download job success")
-        finished_label.configure(text="Download job success", text_color="green")
+            logger.info("Download has started with %s format", format_option)
+            
+            video.download()
+            logger.info("Download job success")
+            finished_label.configure(text="Download job success", text_color="green")
+        else:
+            temporary_video_stream = ytObject.streams.filter(only_video=True, file_extension="mp4").order_by('resolution').desc().first()
+            temporary_audio_stream = ytObject.streams.filter(only_audio=True, mime_type="audio/mp4").order_by("abr").desc().first()
+
+            if not temporary_video_stream or not temporary_audio_stream:
+                logger.error("Could not find suitable streams")
+                return
+
+            temporary_video_file = temporary_video_stream.download(filename="temporary_video.mp4")
+            temporary_audio_file = temporary_audio_stream.download(filename="temporary_audio.mp4")
+
+            # Example: https://www.youtube.com/watch?v=c9eGtyqz4gY
+            output_file = "final_video.mp4"
+            if not os.path.exists(temporary_video_file) or not os.path.exists(temporary_audio_file):
+                logger.error("Video of audio file not existing for merging")
+            else: 
+                try:
+                    (
+                        
+                        FFmpeg().option("y")
+                        .input(temporary_video_file)  
+                        .input(temporary_audio_file) 
+                        .output(output_file, vcodec="copy", acodec="aac")
+                        .execute()
+
+                    )
+                    logger.info("Download job success for merged file: %s", output_file)
+
+                    os.remove(temporary_video_file)
+                    os.remove(temporary_audio_file)
+                    
+                except Exception as e:
+                    print("FFmpeg Error:", e.stderr.decode())
+
+            print(f"Download complete: {output_file}")
+       
     except Exception as e:
         finished_label.configure(text="Error occurred during download.", text_color="red")
         logger.exception("Error occurred during download")
@@ -64,9 +95,6 @@ def _defineYoutubeStream(format, ytObject, title):
                 return ytObject.streams.filter(only_video=True, file_extension="mp4").order_by('bitrate').desc().first()
             case "Audio":
                 return ytObject.streams.filter(only_audio=True).order_by('bitrate').desc().first()
-            case "Video and audio":
-                #TODO: Currently the quality is only around 480-720p, we need to use FFMPEG transformation 
-                return ytObject.streams.filter(adaptive=True).order_by('bitrate').desc().first()
     except Exception as e:
         logger.exception("Error occurred during stream settings")
 
