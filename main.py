@@ -1,7 +1,7 @@
 import os
 import tkinter
 import customtkinter
-from ffmpeg import FFmpeg, Progress 
+from ffmpeg import FFmpeg
 from pytubefix import YouTube
 from logger_definition import logger
 from format_options import FormatOptions
@@ -9,6 +9,10 @@ from utils import is_valid_youtube_url
 
 # TODO: Make it to a standalone runnable
 # TODO: Make translation for system
+# TODO: List downloaded files
+# TODO: Clear button
+# TODO: Icon update
+# TODO: Set progress to 0 after successful or error event
 
 def _on_progress(stream, chunk, bytes_remaining):
     total_size = stream.filesize
@@ -38,7 +42,7 @@ def _startDownload():
         format_option = option_menu.get().strip()
         
         if format_option == "Video" or format_option == "Audio":
-            video = _defineYoutubeStream(format_option, ytObject, ytObject.title)
+            video = _defineYoutubeStream(format_option, ytObject)
             title_label.configure(text=ytObject.title, text_color="white")
             finished_label.configure(text="")
         
@@ -59,7 +63,7 @@ def _startDownload():
             temporary_audio_file = temporary_audio_stream.download(filename="temporary_audio.mp4")
 
             # Example: https://www.youtube.com/watch?v=c9eGtyqz4gY
-            output_file = "final_video.mp4"
+            output_file = ytObject.title+".mp4"
             if not os.path.exists(temporary_video_file) or not os.path.exists(temporary_audio_file):
                 logger.error("Video of audio file not existing for merging")
             else: 
@@ -73,7 +77,6 @@ def _startDownload():
                         .execute()
 
                     )
-                    logger.info("Download job success for merged file: %s", output_file)
 
                     os.remove(temporary_video_file)
                     os.remove(temporary_audio_file)
@@ -81,14 +84,14 @@ def _startDownload():
                 except Exception as e:
                     print("FFmpeg Error:", e.stderr.decode())
 
-            print(f"Download complete: {output_file}")
+            logger.info("Download job success for merged file: %s", output_file)
        
     except Exception as e:
         finished_label.configure(text="Error occurred during download.", text_color="red")
         logger.exception("Error occurred during download")
     
 
-def _defineYoutubeStream(format, ytObject, title):
+def _defineYoutubeStream(format, ytObject):
     try:
         match format:
             case "Video":
