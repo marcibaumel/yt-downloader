@@ -3,3 +3,4 @@ tkinter==5.2.2
 logging== 0.4.9.6
 colorlog==6.9.0
 ffmpeg==1.4
+pyinstaller==6.12.0

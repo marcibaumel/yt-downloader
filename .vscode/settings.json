@@ -4,6 +4,7 @@
         "customtkinter",
         "padx",
         "pady",
+        "pyinstaller",
         "pytube",
         "pytubefix",
         "textvariable",
