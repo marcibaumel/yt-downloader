@@ -1,12 +1,20 @@
 {
     "cSpell.words": [
+        "altgraph",
+        "colorama",
         "colorlog",
+        "ctypes",
         "customtkinter",
+        "darkdetect",
         "padx",
         "pady",
+        "pefile",
+        "pyee",
         "pyinstaller",
         "pytube",
         "pytubefix",
+        "pywin",
+        "setuptools",
         "textvariable",
         "tkinter",
         "youtu"
