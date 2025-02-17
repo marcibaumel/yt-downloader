@@ -26,7 +26,7 @@ console_handler.setFormatter(formatter)
 
 # File handler (without colors)
 file_formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-file_handler = RotatingFileHandler("app.log", maxBytes=5*1024*1024, backupCount=3)  # 5MB max size
+file_handler = RotatingFileHandler("app.log", maxBytes=15*1024*1024, backupCount=3)  # 15MB max size
 file_handler.setFormatter(file_formatter)
 
 # Add handlers to logger
