@@ -7,12 +7,12 @@ from logger_definition import logger
 from format_options import FormatOptions
 from utils import is_valid_youtube_url
 
-# TODO: Make it to a standalone runnable
-# TODO: Make translation for system
 # TODO: List downloaded files
 # TODO: Clear button
 # TODO: Icon update
 # TODO: Set progress to 0 after successful or error event
+# TODO: Merged file name bug
+# TODO: Add target folder input path
 
 def _on_progress(stream, chunk, bytes_remaining):
     total_size = stream.filesize
@@ -63,7 +63,7 @@ def _startDownload():
             temporary_audio_file = temporary_audio_stream.download(filename="temporary_audio.mp4")
 
             # Example: https://www.youtube.com/watch?v=c9eGtyqz4gY
-            output_file = ytObject.title+".mp4"
+            output_file = "final.mp4"
             if not os.path.exists(temporary_video_file) or not os.path.exists(temporary_audio_file):
                 logger.error("Video of audio file not existing for merging")
             else: 
