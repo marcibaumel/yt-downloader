@@ -7,13 +7,12 @@ from logger_definition import logger
 from format_options import FormatOptions
 from utils import is_valid_youtube_url
 
-# TODO: Merged file name bug
-# TODO: Set progress to 0 after successful or error event
 
 # TODO: List downloaded files
 # TODO: Clear button
 # TODO: Icon update
 # TODO: Add target folder input path
+
 
 temporary_video_file_name = "temporary_video.mp4"
 temporary_audio_file_name = "temporary_audio.mp4"
