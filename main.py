@@ -9,7 +9,6 @@ from utils import is_valid_youtube_url
 
 
 # TODO: List downloaded files
-# TODO: Clear button
 # TODO: Icon update
 # TODO: Add target folder input path
 
