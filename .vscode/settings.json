@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
+        "acodec",
         "altgraph",
         "colorama",
         "colorlog",
@@ -17,6 +18,7 @@
         "setuptools",
         "textvariable",
         "tkinter",
+        "vcodec",
         "youtu"
     ]
 }
